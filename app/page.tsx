@@ -5,8 +5,55 @@ import {
   Sparkles, Layers, Film, Image as ImageIcon, Database, 
   Copy, Check, RefreshCw, Clock, Zap, CheckCircle2, AlertCircle 
 } from 'lucide-react';
-import { OmniFlowResponse, ShowcasePreset } from '@/types';
 import ShowcaseGallery from '@/components/ShowcaseGallery';
+
+// 타입을 파일 내부에 직접 선언하여 빌드 누락 방지
+export interface PlanningData {
+  conceptTitle: string;
+  targetInsight: string;
+  hookMessage: string;
+  kpiEstimate: string;
+}
+
+export interface StoryboardScene {
+  sceneNumber: number;
+  timecode: string;
+  visualDescription: string;
+  cameraMovement: string;
+  dialogue?: string;
+}
+
+export interface VisualAssetsData {
+  imagePrompt: string;
+  videoPrompt: string;
+  negativePrompt: string;
+  artDirectionNote: string;
+}
+
+export interface OmniFlowResponse {
+  planning: PlanningData;
+  storyboard: StoryboardScene[];
+  visualAssets: VisualAssetsData;
+}
+
+export interface ShowcasePreset {
+  id: string;
+  category: 'K-Heritage' | 'E-Commerce' | 'Cyberpunk Tech';
+  title: string;
+  idea: string;
+  goal: string;
+  target: string;
+  mood: string;
+  roleContribution: {
+    pm: string;
+    tech: string;
+    creative: string;
+  };
+  metrics: {
+    timeSaved: string;
+    costReduction: string;
+  };
+}
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'planning' | 'storyboard' | 'visual' | 'archive'>('planning');
@@ -44,7 +91,7 @@ export default function DashboardPage() {
         setErrorMsg(data.error || '프롬프트 생성에 실패했습니다.');
       }
     } catch {
-      setErrorMsg('서버와 통신할 수 없습니다. 로컬 서버 상태를 확인해 주세요.');
+      setErrorMsg('서버와 통신할 수 없습니다.');
     } finally {
       setLoading(false);
     }
@@ -70,16 +117,16 @@ export default function DashboardPage() {
         setNotionSaved(true);
         setActiveTab('archive');
       } else {
-        setErrorMsg(data.error || 'Notion 동기화에 실패했습니다.');
+        setErrorMsg(data.error || 'Notion 동기화 실패');
       }
     } catch {
-      setErrorMsg('Notion API 라우트 통신 실패');
+      setErrorMsg('Notion 통신 오류');
     } finally {
       setNotionSyncing(false);
     }
   };
 
-  const handleLoadPreset = (preset: ShowcasePreset) => {
+  const handleLoadPreset = (preset: any) => {
     setForm({
       idea: preset.idea,
       goal: preset.goal,
@@ -119,7 +166,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-1.5 bg-[#0d0f14] px-3 py-1.5 rounded-lg border border-slate-800">
             <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>엔진: <strong className="text-slate-200">Gemini 2.5 Flash</strong></span>
+            <span>엔진: <strong className="text-slate-200">Gemini 3.8 Flash</strong></span>
           </div>
         </div>
       </header>
@@ -246,7 +293,6 @@ export default function DashboardPage() {
               <div className="h-full flex flex-col items-center justify-center text-center p-12 text-slate-500">
                 <Sparkles className="w-10 h-10 mb-3 text-slate-600 animate-pulse" />
                 <p className="text-sm font-medium">좌측 패널에서 아이디어를 입력하고 파이프라인을 실행해 주세요.</p>
-                <p className="text-xs text-slate-600 mt-1">또는 하단 쇼케이스 프리셋을 불러와 바로 검증할 수 있습니다.</p>
               </div>
             ) : (
               <>
@@ -278,7 +324,7 @@ export default function DashboardPage() {
                 {activeTab === 'storyboard' && (
                   <div className="space-y-6">
                     <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#0d0f14] rounded-xl border border-slate-800">
-                      {result.storyboard.map((scene, idx) => (
+                      {result.storyboard.map((scene: StoryboardScene, idx: number) => (
                         <button
                           key={idx}
                           onClick={() => setSelectedScene(idx)}

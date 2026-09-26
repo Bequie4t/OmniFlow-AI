@@ -1,13 +1,8 @@
 import React from 'react';
 import { SHOWCASE_PRESETS } from '@/data/showcases';
-import type { ShowcasePreset } from '../types';
 import { Sparkles, TrendingUp, ArrowUpRight } from 'lucide-react';
 
-interface Props {
-  onSelectPreset: (preset: ShowcasePreset) => void;
-}
-
-export default function ShowcaseGallery({ onSelectPreset }: Props) {
+export default function ShowcaseGallery({ onSelectPreset }: { onSelectPreset: (preset: any) => void }) {
   return (
     <div className="mt-8 pt-8 border-t border-slate-800">
       <div className="flex items-center justify-between mb-4">

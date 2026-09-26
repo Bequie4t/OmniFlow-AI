@@ -1,6 +1,4 @@
-import type { ShowcasePreset } from '../types';
-
-export const SHOWCASE_PRESETS: ShowcasePreset[] = [
+export const SHOWCASE_PRESETS = [
   {
     id: 'heritage-01',
     category: 'K-Heritage',
